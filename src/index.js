@@ -1,6 +1,6 @@
 // Desc: Main entry point for the application
 import express from "express";
-import router from "./routes/route.js";
+import routerApi from "./routes/routes.js";
 
 const PORT = 3000;
 const app = express();
@@ -10,6 +10,17 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// routes for the application
+// basic routes
 
-app.use("/", router);
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
+
+// routes for the application
+routerApi(app);
+
+// error routes
+
+app.get("*", (req, res) => {
+  res.status(404).send("404");
+});
