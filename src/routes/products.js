@@ -2,6 +2,8 @@ import { Router } from "express";
 import { faker } from "@faker-js/faker";
 const router = Router();
 
+// get products
+
 // return json get
 // use faker to generate fake data
 router.get("/", (req, res) => {
@@ -43,4 +45,42 @@ router.get("/:id", (req, res) => {
   });
 });
 
+// post products
+// post is used to create new resources
+// the body of the request contains
+// the data of the new resource
+router.post("/", (req, res) => {
+  // get body from request
+  // the native middleware express.json() is used to parse the body
+  const body = req.body;
+  res.json({
+    message: "created",
+    data: body,
+  });
+});
+
+// patch and put products
+// patch is used to update only
+// the fields that are sent in the request
+// put is used to update all the fields
+router.patch("/:id", (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  // patch: update only the fields that are sent in the request
+  res.json({
+    message: "updated",
+    data: body,
+    id,
+  });
+});
+
+// delete products
+// delete is used to delete resources
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  res.json({
+    message: "deleted",
+    id,
+  });
+});
 export default router;

@@ -10,6 +10,12 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// middleware
+// what is middleware?
+// middleware is a function that
+// has access to the request and response
+app.use(express.json());
+
 // basic routes
 
 app.get("/", (req, res) => {
