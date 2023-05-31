@@ -37,12 +37,22 @@ router.get("/:id", (req, res) => {
   appropriate response. */
   const { id } = req.params;
 
-  /* `res` is an object that represents the HTTP response that the server */
-  res.json({
-    id,
-    name: `Product ${id}`,
-    price: 100,
-  });
+  // response status 404
+
+  if (id === "999") {
+    console.log("enter");
+    res.status(404).json({
+      message: "not found",
+      id,
+    });
+  } else {
+    /* `res` is an object that represents the HTTP response that the server */
+    res.status(201).json({
+      id,
+      name: `Product ${id}`,
+      price: 100,
+    });
+  }
 });
 
 // post products
@@ -53,7 +63,7 @@ router.post("/", (req, res) => {
   // get body from request
   // the native middleware express.json() is used to parse the body
   const body = req.body;
-  res.json({
+  res.status(201).json({
     message: "created",
     data: body,
   });

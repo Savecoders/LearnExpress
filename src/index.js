@@ -1,6 +1,6 @@
 // Desc: Main entry point for the application
 import express from "express";
-import routerApi from "./routes/routes.js";
+import routerApi from "./routes/routes.router.js";
 
 const PORT = 3000;
 const app = express();

@@ -1,7 +1,7 @@
 import express from "express";
-import categoriesRouter from "./categories.js";
-import productsRouter from "./products.js";
-import usersRouter from "./users.js";
+import categoriesRouter from "./categories.router.js";
+import productsRouter from "./products.router.js";
+import usersRouter from "./users.router.js";
 
 function routerApi(app) {
   const routerFirstV = express.Router();
