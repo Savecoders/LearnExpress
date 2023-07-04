@@ -1,23 +1,15 @@
 import { Router } from "express";
 import { faker } from "@faker-js/faker";
-const router = Router();
+import { ProductsService } from "../services/product.service.js";
 
+const router = Router();
+const service = new ProductsService();
 // get products
 
 // return json get
 // use faker to generate fake data
 router.get("/", (req, res) => {
-  const products = [];
-  const { limit = 10 } = req.query;
-  // generate 10 products
-  for (let i = 0; i < limit; i++) {
-    products.push({
-      id: faker.string.uuid(),
-      name: faker.commerce.productName(),
-      price: faker.commerce.price(),
-      image: faker.image.url(),
-    });
-  }
+  const products = service.find();
   res.json(products);
 });
 
@@ -36,23 +28,8 @@ router.get("/:id", (req, res) => {
   server uses this information to process the request and generate an
   appropriate response. */
   const { id } = req.params;
-
-  // response status 404
-
-  if (id === "999") {
-    console.log("enter");
-    res.status(404).json({
-      message: "not found",
-      id,
-    });
-  } else {
-    /* `res` is an object that represents the HTTP response that the server */
-    res.status(201).json({
-      id,
-      name: `Product ${id}`,
-      price: 100,
-    });
-  }
+  const product = service.findOne(id);
+  res.json(product);
 });
 
 // post products
@@ -63,10 +40,9 @@ router.post("/", (req, res) => {
   // get body from request
   // the native middleware express.json() is used to parse the body
   const body = req.body;
-  res.status(201).json({
-    message: "created",
-    data: body,
-  });
+  // create the product
+  const newProduct = service.create(body);
+  res.status(201).json(newProduct); // 201 is the status code for created
 });
 
 // patch and put products
@@ -76,6 +52,8 @@ router.post("/", (req, res) => {
 router.patch("/:id", (req, res) => {
   const { id } = req.params;
   const body = req.body;
+  // update the product
+  service.update(id, body);
   // patch: update only the fields that are sent in the request
   res.json({
     message: "updated",
@@ -88,6 +66,8 @@ router.patch("/:id", (req, res) => {
 // delete is used to delete resources
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
+  // delete the product
+  service.delete(id);
   res.json({
     message: "deleted",
     id,
