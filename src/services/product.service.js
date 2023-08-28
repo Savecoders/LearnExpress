@@ -20,7 +20,9 @@ export class ProductsService {
     }
   }
 
-  create(data) {
+  // the all methods are async because all is a promise
+
+  async create(data) {
     const newProduct = {
       id: faker.string.uuid(),
       ...data,
@@ -29,15 +31,19 @@ export class ProductsService {
     return newProduct;
   }
 
-  find() {
-    return this.products;
+  async find() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(this.products);
+      }, 5000);
+    });
   }
 
-  findOne(id) {
+  async findOne(id) {
     return this.products.find((item) => item.id === id);
   }
 
-  update(id, data) {
+  async update(id, data) {
     const index = this.products.findIndex((item) => item.id === id);
     if (index === -1) {
       throw new Error("Product not found");
@@ -50,7 +56,7 @@ export class ProductsService {
     return this.products[index];
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.products.findIndex((item) => item.id === id);
     if (index === -1) {
       throw new Error("Product not found");

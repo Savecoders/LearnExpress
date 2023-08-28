@@ -9,11 +9,17 @@ const router = Router();
 // http://localhost:3000/users?name=John&age=30
 
 router.get("/", (req, res) => {
-  const { name, age } = req.query;
-  res.json({
-    name,
-    age,
-  });
+  const { limit, offset } = req.query;
+  if (limit && offset) {
+    res.json({
+      limit,
+      offset,
+    });
+  } else {
+    res.json({
+      message: "has no query parameters",
+    });
+  }
 });
 
 export default router;
