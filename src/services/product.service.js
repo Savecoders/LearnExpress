@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { notFound, conflict } from "@hapi/boom";
 
 export class ProductsService {
   constructor() {
@@ -16,6 +17,7 @@ export class ProductsService {
         name: faker.commerce.productName(),
         price: parseFloat(faker.commerce.price()),
         image: faker.image.url(),
+        isBlock: faker.datatype.boolean(),
       });
     }
   }
@@ -40,13 +42,24 @@ export class ProductsService {
   }
 
   async findOne(id) {
-    return this.products.find((item) => item.id === id);
+    //const name = this.getTotal(); test error(500) middleware
+    const product = this.products.find((item) => item.id === id);
+    if (!product) {
+      throw notFound("Product not found");
+    }
+
+    if (product.isBlock) {
+      // 409 is the status code for conflict
+      throw conflict("Product is block");
+    }
+
+    return product;
   }
 
   async update(id, data) {
     const index = this.products.findIndex((item) => item.id === id);
     if (index === -1) {
-      throw new Error("Product not found");
+      throw notFound("Product not found");
     }
     // update the product
     this.products[index] = {
@@ -59,7 +72,7 @@ export class ProductsService {
   async delete(id) {
     const index = this.products.findIndex((item) => item.id === id);
     if (index === -1) {
-      throw new Error("Product not found");
+      throw notFound("Product not found");
     }
     // remove the product from the array products
     this.products.splice(index, 1);

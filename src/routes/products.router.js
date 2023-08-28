@@ -21,15 +21,20 @@ router.get("/filter", async (req, res) => {
 });
 
 // dinamic endpoint with a parameter in the route
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   /* `req` is an object that represents the HTTP request made by the client
   to the server. It contains information about the request such as the
   URL, HTTP method, headers, and any data sent in the request body. The
   server uses this information to process the request and generate an
   appropriate response. */
-  const { id } = req.params;
-  const product = await service.findOne(id);
-  res.json(product);
+  try {
+    const { id } = req.params;
+    const product = await service.findOne(id);
+    res.json(product);
+  } catch (error) {
+    // pass the error to the error handler middleware
+    next(error);
+  }
 });
 
 // post products
@@ -49,7 +54,7 @@ router.post("/", async (req, res) => {
 // patch is used to update only
 // the fields that are sent in the request
 // put is used to update all the fields
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -58,10 +63,7 @@ router.patch("/:id", async (req, res) => {
     // patch: update only the fields that are sent in the request
     res.json(product);
   } catch (error) {
-    // put: update all the fields
-    res.status(404).json({
-      message: error.message,
-    });
+    next(error);
   }
 });
 
