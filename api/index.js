@@ -30,6 +30,7 @@ app.use(cors());
 // basic routes
 
 app.get("/api", (req, res) => {
+  console.log("Mi api");
   res.send("Basic route");
 });
 
