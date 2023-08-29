@@ -1,6 +1,5 @@
 // Error handler middleware
 function logErrors(err, req, res, next) {
-  console.log("logErrors");
   console.error(err);
   // pass the error to the next middleware
   // next() is a function that calls the next middleware
@@ -8,7 +7,6 @@ function logErrors(err, req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
-  console.log("errorHandler");
   // error 500 is internal server error
   // error 404 is a not found error
   res.status(500).send({
@@ -21,7 +19,6 @@ function errorHandler(err, req, res, next) {
 
 // boom error handler using err.isBoom
 function boomErrorHandler(err, req, res, next) {
-  console.log("boomErrorHandler");
   if (err.isBoom) {
     // boom save information about the error in the output property
     const { output } = err;

@@ -1,4 +1,4 @@
-// Desc: Main entry point for the application
+// Main entry point for the application
 import express from "express";
 import routerApi from "./routes/routes.router.js";
 
@@ -13,16 +13,17 @@ import {
 const PORT = 3000;
 const app = express();
 
-// Start the server listening on port 3000
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Cors
+// Cross-origin resource sharing (CORS) is a mechanism that allows
+import cors from "cors";
 
-// middleware
-// what is middleware?
-// middleware is a function that
-// has access to the request and response
+// Start the server listening on port 3000
+app.listen(PORT, () => {});
+
 app.use(express.json());
+
+// use cors
+app.use(cors());
 
 // basic routes
 
@@ -39,6 +40,9 @@ app.get("*", (req, res) => {
 });
 
 // middleware
+// what is middleware?
+// middleware is a function that
+// has access to the request and response
 // Error handler middleware
 app.use(logErrors);
 app.use(boomErrorHandler);
