@@ -10,7 +10,7 @@ import {
 } from "./middlewares/error.handler.js";
 
 // Constants
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 // Cors
@@ -18,7 +18,9 @@ const app = express();
 import cors from "cors";
 
 // Start the server listening on port 3000
-app.listen(PORT, () => {});
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 app.use(express.json());
 
@@ -27,7 +29,7 @@ app.use(cors());
 
 // basic routes
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Basic route");
 });
 
