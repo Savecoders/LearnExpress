@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { faker } from "@faker-js/faker";
 
 // import the service for the products
 import { ProductsService } from "../services/product.service.js";

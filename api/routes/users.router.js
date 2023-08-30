@@ -1,25 +1,83 @@
 import { Router } from "express";
-import { faker } from "@faker-js/faker";
+
+import { validatorHandler } from "../middlewares/validator.handler.js";
+import { UsersService } from "../services/user.service.js";
+
+// schemas
+import {
+  updateUserSchema,
+  createUserSchema,
+  getUserSchema,
+} from "./../schemas/user.schema.js";
 
 const router = Router();
+const service = new UsersService();
 
-// query parameters
-// query is an object that contains the query parameters included in the
-// request URL. For example, if the client makes a request to the URL
-// http://localhost:3000/users?name=John&age=30
-
-router.get("/", (req, res) => {
-  const { limit, offset } = req.query;
-  if (limit && offset) {
-    res.json({
-      limit,
-      offset,
-    });
-  } else {
-    res.json({
-      message: "has no query parameters",
-    });
+router.get("/", async (req, res, next) => {
+  try {
+    const categories = await service.find();
+    res.json(categories);
+  } catch (error) {
+    next(error);
   }
 });
+
+router.get(
+  "/:id",
+  validatorHandler(getUserSchema, "params"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const category = await service.findOne(id);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/",
+  validatorHandler(createUserSchema, "body"),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newCategory = await service.create(body);
+      res.status(201).json(newCategory);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.patch(
+  "/:id",
+  validatorHandler(getUserSchema, "params"),
+  validatorHandler(updateUserSchema, "body"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const category = await service.update(id, body);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  validatorHandler(getUserSchema, "params"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.delete(id);
+      res.status(201).json({ id });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

@@ -1,47 +1,82 @@
 import { Router } from "express";
-import { faker } from "@faker-js/faker";
+
+import { CategoriesService } from "../services/categorie.service.js";
+import { validatorHandler } from "../middlewares/validator.handler.js";
+
+import {
+  createCategorySchema,
+  updateCategorySchema,
+  getCategorySchema,
+} from "../schemas/category.schema.js";
+
 const router = Router();
+const service = new CategoriesService();
 
-// two parameters in the route
-router.get("/:categoryId/products/:productId", (req, res) => {
-  const { categoryId, productId } = req.params;
-  res.json({
-    categoryId,
-    productId,
-  });
+router.get("/", async (req, res, next) => {
+  try {
+    const categories = await service.find();
+    res.json(categories);
+  } catch (error) {
+    next(error);
+  }
 });
 
-// post products
-router.post("/", (req, res) => {
-  const body = req.body;
-  res.json({
-    message: "created",
-    data: body,
-  });
-});
+router.get(
+  "/:id",
+  validatorHandler(getCategorySchema, "params"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const category = await service.findOne(id);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
-// patch and put products
-router.patch("/:id", (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  res.json({
-    message: "updated",
-    data: body,
-    id,
-  });
-});
+router.post(
+  "/",
+  validatorHandler(createCategorySchema, "body"),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newCategory = await service.create(body);
+      res.status(201).json(newCategory);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
-// delete products
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  res.json({
-    message: "deleted",
-    id,
-  });
-});
+router.patch(
+  "/:id",
+  validatorHandler(getCategorySchema, "params"),
+  validatorHandler(updateCategorySchema, "body"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const category = await service.update(id, body);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
-// what is middleware?
-// middleware is a function that
-// has access to the request and response
+router.delete(
+  "/:id",
+  validatorHandler(getCategorySchema, "params"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.delete(id);
+      res.status(201).json({ id });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

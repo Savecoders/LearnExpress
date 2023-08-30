@@ -17,11 +17,6 @@ const app = express();
 // Cross-origin resource sharing (CORS) is a mechanism that allows
 import cors from "cors";
 
-// Start the server listening on port 3000
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
 app.use(express.json());
 
 // use cors
@@ -31,7 +26,7 @@ app.use(cors());
 
 app.get("/api", (req, res) => {
   console.log("Mi api");
-  res.send("Basic route");
+  res.send("Hello welcome to my API");
 });
 
 // routes for the application
@@ -53,3 +48,8 @@ app.use(errorHandler);
 // the order of the middleware is important
 // the error handler middleware must be the last one
 // to catch all the errors
+
+// Start the server listening on port 3000
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
